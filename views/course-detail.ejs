@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= course.title %> - Learning Platform</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <% if (user) { %>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="/courses">Learning Platform</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/courses">Browse Courses</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/my-courses">My Courses</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/dashboard">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <span class="nav-link">Welcome, <%= user.full_name %></span>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <% } else { %>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="/courses">Learning Platform</a>
+      <div class="ms-auto">
+        <a href="/login" class="btn btn-outline-light me-2">Login</a>
+        <a href="/register" class="btn btn-light">Sign Up</a>
+      </div>
+    </div>
+  </nav>
+  <% } %>
+
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-8">
+        <h2><%= course.title %></h2>
+        <p class="text-muted">By <%= course.teacher_name %> | <%= course.category_name || 'Uncategorized' %></p>
+        
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5>About this course</h5>
+            <p><%= course.description %></p>
+          </div>
+        </div>
+
+        <% if (course.what_you_will_learn) { %>
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5>What you'll learn</h5>
+            <p><%= course.what_you_will_learn %></p>
+          </div>
+        </div>
+        <% } %>
+
+        <div class="card">
+          <div class="card-body">
+            <h5>Course Content (<%= lessons.length %> lessons)</h5>
+            <% if (lessons.length === 0) { %>
+              <p class="text-muted">No lessons added yet.</p>
+            <% } else { %>
+              <ul class="list-group list-group-flush">
+                <% lessons.forEach(lesson => { %>
+                  <li class="list-group-item">
+                    <%= lesson.lesson_order %>. <%= lesson.title %>
+                  </li>
+                <% }) %>
+              </ul>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card sticky-top" style="top: 20px;">
+          <div class="card-body">
+            <h5>Enroll in this course</h5>
+            <p><span class="badge bg-info"><%= course.lesson_count %> lessons</span></p>
+            <p><span class="badge bg-success"><%= course.student_count %> students enrolled</span></p>
+            
+            <% if (!user) { %>
+              <a href="/login" class="btn btn-primary w-100">Login to Enroll</a>
+            <% } else if (user.role === 'teacher') { %>
+              <% if (course.teacher_id === user.id) { %>
+                <a href="/courses/<%= course.id %>/manage" class="btn btn-secondary w-100">Manage Course</a>
+              <% } else { %>
+                <p class="text-muted">Teachers cannot enroll in courses</p>
+              <% } %>
+            <% } else if (isEnrolled) { %>
+              <button class="btn btn-success w-100" disabled>Already Enrolled</button>
+              <% if (lessons.length > 0) { %>
+                <a href="/courses/<%= course.id %>/lessons/<%= lessons[0].id %>" class="btn btn-primary w-100 mt-2">Start Learning</a>
+              <% } %>
+            <% } else { %>
+              <form method="POST" action="/courses/<%= course.id %>/enroll">
+                <button type="submit" class="btn btn-primary w-100">Enroll Now - Free</button>
+              </form>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <a href="/courses" class="btn btn-secondary">Back to Catalog</a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

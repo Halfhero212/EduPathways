@@ -23,16 +23,16 @@ app.use((req, res, next) => {
 
 const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
-const lessonRoutes = require('./routes/lessons');
-const taskRoutes = require('./routes/tasks');
+const courseRoutes = require('./routes/courses');
+const myCoursesRoutes = require('./routes/my-courses');
 
 app.use('/', authRoutes);
 app.use('/dashboard', dashboardRoutes);
-app.use('/lessons', lessonRoutes);
-app.use('/tasks', taskRoutes);
+app.use('/courses', courseRoutes);
+app.use('/my-courses', myCoursesRoutes);
 
 app.get('/', (req, res) => {
-  res.redirect('/login');
+  res.redirect('/courses');
 });
 
 app.listen(PORT, '0.0.0.0', () => {

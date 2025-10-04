@@ -9,20 +9,20 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
-      <a class="navbar-brand" href="/dashboard">School Platform</a>
+      <a class="navbar-brand" href="/courses">Learning Platform</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
+            <a class="nav-link" href="/courses">Browse Courses</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/my-courses">My Courses</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link active" href="/dashboard">Dashboard</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/lessons">Lessons</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/tasks">Tasks</a>
           </li>
           <li class="nav-item">
             <span class="nav-link">Welcome, <%= user.full_name %></span>
@@ -41,24 +41,24 @@
       <div class="col-md-4">
         <div class="card text-white bg-primary mb-3">
           <div class="card-body">
-            <h5 class="card-title">Available Lessons</h5>
-            <p class="card-text display-4"><%= lesson_count %></p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card text-white bg-warning mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Pending Tasks</h5>
-            <p class="card-text display-4"><%= task_count %></p>
+            <h5 class="card-title">Enrolled Courses</h5>
+            <p class="card-text display-4"><%= enrolled_count %></p>
           </div>
         </div>
       </div>
       <div class="col-md-4">
         <div class="card text-white bg-success mb-3">
           <div class="card-body">
-            <h5 class="card-title">Submitted</h5>
-            <p class="card-text display-4"><%= submission_count %></p>
+            <h5 class="card-title">Lessons Completed</h5>
+            <p class="card-text display-4"><%= completed_lessons %></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-white bg-info mb-3">
+          <div class="card-body">
+            <h5 class="card-title">Total Lessons</h5>
+            <p class="card-text display-4"><%= total_lessons %></p>
           </div>
         </div>
       </div>
@@ -68,8 +68,8 @@
       <div class="col-md-12">
         <h4>Quick Actions</h4>
         <div class="d-grid gap-2 d-md-block">
-          <a href="/lessons" class="btn btn-primary btn-lg">View Lessons</a>
-          <a href="/tasks" class="btn btn-warning btn-lg ms-md-2">View Tasks</a>
+          <a href="/courses" class="btn btn-primary btn-lg">Browse Courses</a>
+          <a href="/my-courses" class="btn btn-success btn-lg ms-md-2">My Courses</a>
         </div>
       </div>
     </div>

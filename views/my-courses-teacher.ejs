@@ -3,26 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tasks</title>
+  <title>My Courses</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
-      <a class="navbar-brand" href="/dashboard">School Platform</a>
+      <a class="navbar-brand" href="/courses">Learning Platform</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
+            <a class="nav-link" href="/courses">Browse Courses</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/my-courses">My Courses</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="/dashboard">Dashboard</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/lessons">Lessons</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="/tasks">Tasks</a>
           </li>
           <li class="nav-item">
             <span class="nav-link">Welcome, <%= user.full_name %></span>
@@ -37,24 +37,30 @@
 
   <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2>My Tasks</h2>
-      <a href="/tasks/create" class="btn btn-primary">Create New Task</a>
+      <h2>My Courses</h2>
+      <a href="/courses/create" class="btn btn-primary">Create New Course</a>
     </div>
 
     <div class="row">
-      <% if (tasks.length === 0) { %>
+      <% if (courses.length === 0) { %>
         <div class="col-12">
-          <div class="alert alert-info">No tasks created yet.</div>
+          <div class="alert alert-info">
+            You haven't created any courses yet. <a href="/courses/create">Create your first course</a>
+          </div>
         </div>
       <% } else { %>
-        <% tasks.forEach(task => { %>
-          <div class="col-md-6 mb-3">
+        <% courses.forEach(course => { %>
+          <div class="col-md-6 mb-4">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title"><%= task.title %></h5>
-                <p class="card-text"><%= task.description.substring(0, 100) %>...</p>
-                <p class="text-muted small">Deadline: <%= new Date(task.deadline).toLocaleDateString() %></p>
-                <a href="/tasks/<%= task.id %>" class="btn btn-primary">View Task</a>
+                <h5 class="card-title"><%= course.title %></h5>
+                <p class="card-text"><%= course.description.substring(0, 100) %>...</p>
+                <div class="mb-2">
+                  <span class="badge bg-info"><%= course.lesson_count %> lessons</span>
+                  <span class="badge bg-success"><%= course.student_count %> students</span>
+                </div>
+                <a href="/courses/<%= course.id %>/manage" class="btn btn-primary">Manage Course</a>
+                <a href="/courses/<%= course.id %>" class="btn btn-outline-secondary">View Page</a>
               </div>
             </div>
           </div>
