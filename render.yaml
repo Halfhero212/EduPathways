@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: learning-platform-api
+    runtime: node
+    env: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true
