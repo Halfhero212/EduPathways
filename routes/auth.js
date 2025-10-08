@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
-const db = require('../database/init');
+const { query } = require('../database/init-postgres');
 const { JWT_SECRET } = require('../middleware/auth');
 
 router.get('/register', (req, res) => {
@@ -26,17 +26,16 @@ router.post('/register', [
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     
-    db.run(
-      'INSERT INTO users (email, password, full_name, role) VALUES (?, ?, ?, ?)',
-      [email, hashedPassword, full_name, role],
-      function(err) {
-        if (err) {
-          return res.render('register', { error: 'Email already exists' });
-        }
-        res.redirect('/login');
-      }
+    await query(
+      'INSERT INTO users (email, password, full_name, role) VALUES ($1, $2, $3, $4)',
+      [email, hashedPassword, full_name, role]
     );
+    
+    res.redirect('/login');
   } catch (err) {
+    if (err.code === '23505') {
+      return res.render('register', { error: 'Email already exists' });
+    }
     res.render('register', { error: 'Error creating account' });
   }
 });
@@ -48,8 +47,11 @@ router.get('/login', (req, res) => {
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
-  db.get('SELECT * FROM users WHERE email = ?', [email], async (err, user) => {
-    if (err || !user) {
+  try {
+    const result = await query('SELECT * FROM users WHERE email = $1', [email]);
+    const user = result.rows[0];
+
+    if (!user) {
       return res.render('login', { error: 'Invalid credentials' });
     }
 
@@ -66,7 +68,9 @@ router.post('/login', async (req, res) => {
 
     res.cookie('token', token, { httpOnly: true });
     res.redirect('/dashboard');
-  });
+  } catch (err) {
+    res.render('login', { error: 'Error logging in' });
+  }
 });
 
 router.get('/logout', (req, res) => {

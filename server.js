@@ -30,6 +30,7 @@ app.use((req, res, next) => {
   next();
 });
 
+// API Routes (PostgreSQL-based)
 const apiAuthRoutes = require('./routes/api/auth');
 const apiDashboardRoutes = require('./routes/api/dashboard');
 const apiCourseRoutes = require('./routes/api/courses');
@@ -40,20 +41,29 @@ app.use('/api/dashboard', apiDashboardRoutes);
 app.use('/api/courses', apiCourseRoutes);
 app.use('/api/my-courses', apiMyCoursesRoutes);
 
-const authRoutes = require('./routes/auth');
-const dashboardRoutes = require('./routes/dashboard');
-const courseRoutes = require('./routes/courses');
-const myCoursesRoutes = require('./routes/my-courses');
+// Legacy EJS routes (only for local development, not deployed to Vercel)
+if (process.env.NODE_ENV !== 'production') {
+  const authRoutes = require('./routes/auth');
+  const dashboardRoutes = require('./routes/dashboard');
+  const courseRoutes = require('./routes/courses');
+  const myCoursesRoutes = require('./routes/my-courses');
 
-app.use('/', authRoutes);
-app.use('/dashboard', dashboardRoutes);
-app.use('/courses', courseRoutes);
-app.use('/my-courses', myCoursesRoutes);
+  app.use('/', authRoutes);
+  app.use('/dashboard', dashboardRoutes);
+  app.use('/courses', courseRoutes);
+  app.use('/my-courses', myCoursesRoutes);
+}
 
 app.get('/', (req, res) => {
   res.redirect('/courses');
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
+
+// Export for Vercel serverless
+module.exports = app;
