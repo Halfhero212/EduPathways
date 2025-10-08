@@ -5,60 +5,105 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Student Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
-      <a class="navbar-brand" href="/courses">Learning Platform</a>
+      <a class="navbar-brand" href="/courses"><i class="fas fa-graduation-cap me-2"></i>Learning Platform</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="nav-link" href="/courses">Browse Courses</a>
+            <a class="nav-link" href="/courses"><i class="fas fa-book me-1"></i> Browse Courses</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/my-courses">My Courses</a>
+            <a class="nav-link" href="/my-courses"><i class="fas fa-folder me-1"></i> My Courses</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="/dashboard">Dashboard</a>
+            <a class="nav-link active" href="/dashboard"><i class="fas fa-chart-line me-1"></i> Dashboard</a>
           </li>
           <li class="nav-item">
-            <span class="nav-link">Welcome, <%= user.full_name %></span>
+            <span class="nav-link"><i class="fas fa-user me-1"></i> <%= user.full_name %></span>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/logout">Logout</a>
+            <a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt me-1"></i> Logout</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <div class="container mt-4">
-    <h2>Student Dashboard</h2>
+  <div class="hero-section">
+    <div class="container">
+      <h1><i class="fas fa-user-graduate me-2"></i> Welcome back, <%= user.full_name %>!</h1>
+      <p>Continue your learning journey today</p>
+    </div>
+  </div>
+
+  <div class="container mt-4 mb-5">
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="stats-card fade-in">
+          <h5><i class="fas fa-book-open me-2"></i> Enrolled Courses</h5>
+          <p class="display-4 mb-0"><%= enrolled_count %></p>
+          <small>Courses you're learning</small>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="stats-card success fade-in">
+          <h5><i class="fas fa-check-circle me-2"></i> Lessons Completed</h5>
+          <p class="display-4 mb-0"><%= completed_lessons %></p>
+          <small>Lessons finished</small>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="stats-card info fade-in">
+          <h5><i class="fas fa-video me-2"></i> Total Lessons</h5>
+          <p class="display-4 mb-0"><%= total_lessons %></p>
+          <small>Available to watch</small>
+        </div>
+      </div>
+    </div>
+
+    <% if (total_lessons > 0) { %>
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <div class="card fade-in">
+          <div class="card-body">
+            <h5><i class="fas fa-chart-bar me-2"></i> Your Progress</h5>
+            <div class="progress mb-2" style="height: 25px;">
+              <div class="progress-bar" role="progressbar" style="width: <%= total_lessons > 0 ? Math.round((completed_lessons / total_lessons) * 100) : 0 %>%">
+                <%= total_lessons > 0 ? Math.round((completed_lessons / total_lessons) * 100) : 0 %>%
+              </div>
+            </div>
+            <p class="text-muted mb-0">You've completed <%= completed_lessons %> out of <%= total_lessons %> lessons</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } %>
+
     <div class="row mt-4">
-      <div class="col-md-4">
-        <div class="card text-white bg-primary mb-3">
+      <div class="col-md-12">
+        <div class="card fade-in">
           <div class="card-body">
-            <h5 class="card-title">Enrolled Courses</h5>
-            <p class="card-text display-4"><%= enrolled_count %></p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card text-white bg-success mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Lessons Completed</h5>
-            <p class="card-text display-4"><%= completed_lessons %></p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card text-white bg-info mb-3">
-          <div class="card-body">
-            <h5 class="card-title">Total Lessons</h5>
-            <p class="card-text display-4"><%= total_lessons %></p>
+            <h4 class="mb-4"><i class="fas fa-rocket me-2"></i> Quick Actions</h4>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <a href="/courses" class="btn btn-primary btn-lg w-100">
+                  <i class="fas fa-search me-2"></i> Browse Courses
+                </a>
+              </div>
+              <div class="col-md-6 mb-3">
+                <a href="/my-courses" class="btn btn-success btn-lg w-100">
+                  <i class="fas fa-play me-2"></i> Continue Learning
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -66,10 +111,30 @@
 
     <div class="row mt-4">
       <div class="col-md-12">
-        <h4>Quick Actions</h4>
-        <div class="d-grid gap-2 d-md-block">
-          <a href="/courses" class="btn btn-primary btn-lg">Browse Courses</a>
-          <a href="/my-courses" class="btn btn-success btn-lg ms-md-2">My Courses</a>
+        <div class="card fade-in">
+          <div class="card-body">
+            <h4 class="mb-3"><i class="fas fa-trophy me-2"></i> Learning Tips</h4>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <div class="p-3 bg-light rounded">
+                  <h6><i class="fas fa-calendar-check text-primary me-2"></i> Stay Consistent</h6>
+                  <p class="small text-muted mb-0">Set aside time each day to learn</p>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <div class="p-3 bg-light rounded">
+                  <h6><i class="fas fa-tasks text-success me-2"></i> Track Progress</h6>
+                  <p class="small text-muted mb-0">Mark lessons complete as you finish them</p>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <div class="p-3 bg-light rounded">
+                  <h6><i class="fas fa-redo text-info me-2"></i> Practice</h6>
+                  <p class="small text-muted mb-0">Review lessons to reinforce learning</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
