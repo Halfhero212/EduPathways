@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
-const db = require('../../database/init');
+const { query } = require('../../database/init-postgres');
 const { JWT_SECRET } = require('../../middleware/auth');
 
 router.post('/register', [
@@ -25,23 +25,22 @@ router.post('/register', [
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     
-    db.run(
-      'INSERT INTO users (email, password, full_name, role) VALUES (?, ?, ?, ?)',
-      [email, hashedPassword, full_name, role],
-      function(err) {
-        if (err) {
-          return res.status(400).json({ 
-            success: false, 
-            error: 'Email already exists' 
-          });
-        }
-        res.json({ 
-          success: true, 
-          message: 'Account created successfully' 
-        });
-      }
+    await query(
+      'INSERT INTO users (email, password, full_name, role) VALUES ($1, $2, $3, $4)',
+      [email, hashedPassword, full_name, role]
     );
+    
+    res.json({ 
+      success: true, 
+      message: 'Account created successfully' 
+    });
   } catch (err) {
+    if (err.code === '23505') {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Email already exists' 
+      });
+    }
     res.status(500).json({ 
       success: false, 
       error: 'Error creating account' 
@@ -52,8 +51,11 @@ router.post('/register', [
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
-  db.get('SELECT * FROM users WHERE email = ?', [email], async (err, user) => {
-    if (err || !user) {
+  try {
+    const result = await query('SELECT * FROM users WHERE email = $1', [email]);
+    const user = result.rows[0];
+    
+    if (!user) {
       return res.status(401).json({ 
         success: false, 
         error: 'Invalid credentials' 
@@ -84,7 +86,12 @@ router.post('/login', async (req, res) => {
         role: user.role
       }
     });
-  });
+  } catch (err) {
+    res.status(500).json({ 
+      success: false, 
+      error: 'Error logging in' 
+    });
+  }
 });
 
 router.post('/logout', (req, res) => {

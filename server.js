@@ -3,9 +3,15 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const path = require('path');
+const { initializeDatabase } = require('./database/init-postgres');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Initialize PostgreSQL database
+initializeDatabase().catch(err => {
+  console.error('Failed to initialize database:', err);
+});
 
 app.use(cors());
 app.use(express.json());
